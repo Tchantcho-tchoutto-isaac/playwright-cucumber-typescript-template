@@ -1,21 +1,21 @@
-const path = require('path');
-
 module.exports = {
   default: {
-    requireModule: ["ts-node/register"],  // Active TypeScript
     require: [
-      "step-definitions/**/*.ts",   // Path vers les fichiers step-definitions
-      "hooks/**/*.ts"               // Path vers les hooks
+      "step-definitions/**/*.ts",
+      "hooks/**/*.ts"
     ],
+    
     format: [
-      "json:reports/cucumber-report.json", // JSON report
-      "html:reports/cucumber-report.html"  // HTML report
+      "allure-cucumberjs/reporter",
+      "json:reports/allure-results.json",
+      "html:reports/cucumber-report.html"
     ],
-    paths: ["features/**/*.feature"], // Assure que les fichiers .feature sont bien inclus
-    tags: "",  // Filtre les scénarios avec @post
-    worldParameters: {           
-      baseUrl: "http://192.168.1.95:9091/admin/login/"  // Définition d'un paramètre global
+    tags: "",
+    worldParameters: {
+      baseUrl: "https://opensource-demo.orangehrmlive.com"
     },
-    timeout: 10000, // Timeout des tests (10s)
-  }
+    requireModule: ["ts-node/register"],
+    timeout: 20000 // Augmenter le timeout à 20s (au lieu de 5000 ms)
+  },
+  snippets: true,
 };

@@ -7,8 +7,8 @@ pipeline {
     }
 
     environment {
-        ALLURE_RESULTS = "reports/allure-results"
-        ALLURE_REPORT = "reports/allure-report"
+        ALLURE_RESULTS = "allure-results"
+        ALLURE_REPORT = "allure-report"
     }
 
     stages {
@@ -40,7 +40,7 @@ pipeline {
         stage('Publish Allure Report') {
             steps {
                 allure([
-                    results: [[path: 'reports/allure-results']],
+                    results: [[path: 'allure-results']],
                     reportBuildPolicy: 'ALWAYS'
                 ])
             }
