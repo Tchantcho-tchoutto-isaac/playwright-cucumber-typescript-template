@@ -1,64 +1,55 @@
 pipeline {
-    agent {
-        docker {
-         image 'mcr.microsoft.com/playwright:v1.50.0-noble'
-            args '--ipc=host'
-        }
-    }
-
-    environment {
-        ALLURE_RESULTS = "allure-results"
-        ALLURE_REPORT = "allure-report"
-    }
-
+    agent any
     stages {
-        
-        stage('Checkout Code') {
-            steps {
-                checkout scm
+        stage('build and install') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.51.0-noble'
+                    args '-u root:root'
+                }
             }
-        }
 
-        stage('Install Dependencies') {
             steps {
-                sh 'npm install'
-            }
-        }
-        stage('Install Playwright Browsers') {
-            steps {
-                sh 'npx playwright install'
-            }
-        }
+                script {
+                    
+                    sh 'npm ci'
+                    
 
-        stage('Run Playwright Tests with Cucumber') {
-            steps {
-                //sh 'npx cucumber-js --format progress --publish'
-                 sh 'xvfb-run --auto-servernum -- npx cucumber-js --format progress --publish'
-            }
-        }
-
-        stage('Generate Allure Report') {
-            steps {
-                sh 'npx allure generate --clean'
-            }
-        }
-
-        stage('Publish Allure Report') {
-            steps {
-                allure([
-                    results: [[path: 'allure-results']],
-                    reportBuildPolicy: 'ALWAYS'
-                ])
+                    sh 'npx cucumber-js'
+                    //sh 'allure generate ./allure-results -o ./allure-report'
+                    stash name: 'allure-results', includes: 'allure-results/*'
+                   // stash name: 'allure-results', includes: 'allure-results/**', allowEmpty: true
+                }
             }
         }
     }
-
     post {
-        success {
-            echo "Tests Playwright + Cucumber réussis avec succès ! 🎉"
-        }
-        failure {
-            echo "Des tests ont échoué ❌"
+        always {
+            //sh 'ls -al reports/' 
+
+            // cucumber buildStatus: 'UNSTABLE',
+            //         failedFeaturesNumber: 1,
+            //         failedScenariosNumber: 1,
+            //         skippedStepsNumber: 1,
+            //         failedStepsNumber: 1,
+            //         classifications: [
+            //                 [key: 'Commit', value: '<a href="${GERRIT_CHANGE_URL}">${GERRIT_PATCHSET_REVISION}</a>'],
+            //                 [key: 'Submitter', value: '${GERRIT_PATCHSET_UPLOADER_NAME}']
+            //         ],
+            //         reportTitle: 'My report',
+            //         fileIncludePattern: 'reports/cucumber-report.json', // Corrige le chemin d'inclusion
+            //         sortingMethod: 'ALPHABETICAL',
+            //         trendsLimit: 100
+           // unstash 'allure-results' //extract results
+            script {
+                allure([
+                includeProperties: false,
+                jdk: '',
+                properties: [],
+                reportBuildPolicy: 'ALWAYS',
+                results: [[path: 'allure-results']]
+            ])
+            }
         }
     }
 }
