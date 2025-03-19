@@ -24,6 +24,11 @@ pipeline {
                 sh 'npm install'
             }
         }
+        stage('Install Playwright Browsers') {
+            steps {
+                sh 'npx playwright install'
+            }
+        }
 
         stage('Run Playwright Tests with Cucumber') {
             steps {
