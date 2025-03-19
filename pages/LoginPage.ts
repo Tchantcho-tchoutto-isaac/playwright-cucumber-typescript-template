@@ -15,7 +15,7 @@ export class LoginPage {
   };
 
   async goto() {
-    await this.page.goto('http://192.168.1.95:9092/admin/login');
+    await this.page.goto('http://192.168.1.95:9091/admin/login');
   }
 
   async login(username: string, password: string) {
