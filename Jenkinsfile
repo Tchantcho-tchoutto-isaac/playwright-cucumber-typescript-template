@@ -27,7 +27,7 @@ pipeline {
 
         stage('Run Playwright Tests with Cucumber') {
             steps {
-                sh 'npx cucumber-js'
+                sh 'npx cucumber-js --format progress --publish'
             }
         }
 

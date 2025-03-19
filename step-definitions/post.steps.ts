@@ -32,6 +32,7 @@ Then('JE remplit le formuaire avec les informations suivantes  titre {string}  c
   await postPage.fillTitle(titre);
   await postPage.fillContent(contenu);
   await postPage.clickSave();
+ 
 });
 
 Then('je suis redirigé vers la page admin et le message de succes s affiche', async () => {
