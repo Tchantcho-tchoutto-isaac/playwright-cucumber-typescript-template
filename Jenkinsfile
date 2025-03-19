@@ -32,7 +32,8 @@ pipeline {
 
         stage('Run Playwright Tests with Cucumber') {
             steps {
-                sh 'npx cucumber-js --format progress --publish'
+                //sh 'npx cucumber-js --format progress --publish'
+                 sh 'xvfb-run --auto-servernum -- npx cucumber-js --format progress --publish'
             }
         }
 
